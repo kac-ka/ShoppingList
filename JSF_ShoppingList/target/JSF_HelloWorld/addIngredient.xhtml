@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="navigation.xhtml">
+    <ui:define name="title">GG - Add Ingredient</ui:define>
+    <ui:define name="content">
+        <h:form>
+            <div class="addIngredientWrapper">
+                <ui:repeat id="ingredientRepeat" value="#{addIngredientBean.ingredientsList}" var="row">
+                    <div class="rowWrapper">
+                        <div>
+                            <p:inputText id="ingredientName"
+                                         value="#{row.ingredientNameEN}"
+                                         placeholder="Ingredient name"
+                                         required="true"
+                                         styleClass="ingredientNameTxt"/>
+                        </div>
+                        <div title="Select category">
+                            <p:selectOneMenu id="category"
+                                             value="#{row.categoryID}"
+                                             styleClass="selectOneMenuStyle"
+                                             panelStyleClass="selectOneMenuStylePanel selectOneMenuStylePanelWidth">
+                                <f:selectItem itemLabel="–" itemValue="" noSelectionOption="true"/>
+                                <f:selectItems value="#{addIngredientBean.categoryMap.entrySet().toArray()}"
+                                               var="cat"
+                                               itemLabel="#{cat.value.get(1)}"
+                                               itemValue="#{cat.key}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div title="Select default unit">
+                            <p:selectOneMenu id="defaultUnit"
+                                             value="#{row.defaultUnitID}"
+                                             required="true"
+                                             styleClass="selectOneMenuStyle defaultUnitSelect"
+                                             panelStyleClass="selectOneMenuStylePanel">
+                                <f:selectItem itemLabel="–" itemValue=""/>
+                                <f:selectItem itemLabel="g" itemValue="5"/>
+                                <f:selectItem itemLabel="ml" itemValue="7"/>
+                                <p:ajax event="itemSelect" process="@form" update="@form @([id$='altUnitRepeat'])"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class = "valueAltUnitWrapper">
+                            <p:repeat id="altUnitRepeat" value="#{addIngredientBean.getAltUnitValueListPerRow(row.rowID, row.defaultUnitID)}" var="unitItem">
+                                <div title="" class = "altUnitValueItem">
+                                    <p:outputLabel  for="unitItemValue"
+                                                    id="unitItemLabel"
+                                                    value="#{unitItem.unitNameEN}"
+                                                    styleClass="ingredientUnitLabel"/>
+                                    <p:inputNumber id="unitItemValue"
+                                                   value="#{unitItem.value}"
+                                                   minValue="0.000"
+                                                   decimalPlaces="3"
+                                                   styleClass="ingredientValueNumb"/>
+                                </div>
+                            </p:repeat>
+                        </div>
+                        <div class="addNewRowButton">
+                            <p:commandButton action="#{addIngredientBean.addNewLine(row.rowID)}"
+                                             process="@form"
+                                             update="@form @([id$='ingredientRepeat'])"
+                                             icon="pi pi-plus"
+                                             partialSubmit="true"
+                                             styleClass="rounded-button ui-button-outlined"
+                                             type="submit"/>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
+            <div class="saveAllIngredients">
+                <p:commandButton type="submit"
+                                 process="@form"
+                                 update="@none"
+                                 action="#{addIngredientBean.InsertIngredients()}"
+                                 value="Save ingredient"
+                                 styleClass="ui-button-danger" />
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

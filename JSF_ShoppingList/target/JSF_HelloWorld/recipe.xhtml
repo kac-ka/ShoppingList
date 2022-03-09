@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="navigation.xhtml">
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="recipeID" value="#{recipeBean.recipeID}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="title">GG - #{recipeBean.getRecipe().recipeNameEN}</ui:define>
+    <ui:define name="content">
+        <article class = "article-wrapper">
+            <div class = "content-wrapper">
+                <div class = "left-column">
+                    <p:graphicImage styleClass = "img-own-recipe"
+                                    value="#{recipeBean.getIMGPath()}" />
+                    <div class = "ingredient-wrapper">
+                        <h:form id="ingredientsForm">
+                            <div class = "ingredient-list">
+                                <div class = "list-item-wrapper">
+                                    <span class = "header-text">Ingredients</span>
+                                    <div class = "portion-spinner-wrapper">
+                                        <p:outputLabel for="@next" value="Servings" styleClass="text-spinner"/>
+                                        <p:spinner id="horizontal"
+                                                   value="#{recipeBean.getRecipe().portion}"
+                                                   min="1"
+                                                   styleClass="portion-spinner">
+                                            <p:ajax process="@this" listener="#{recipeBean.calculatedAmount()}"
+                                                    update="@([id$='wholeAmount']) @([id$='fractionAmount']) @([id$='wholeAlterAmount'])" />
+                                        </p:spinner>
+                                    </div>
+                                </div>
+                                <p:repeat id="ingredientsList" value="#{recipeBean.getRecipe().ingredients}" var="row">
+                                    <div class = "ingredient-list-item">
+                                        <p:selectBooleanCheckbox id="rowCheckbox"
+                                                                 value="#{row.checked}"
+                                                                 styleClass = "checkbox-style">
+                                            <p:ajax process="@this" update="@([id$='selectAllCheckbox'])"/>
+                                        </p:selectBooleanCheckbox>
+                                        <h:outputText id="wholeAmount" rendered="#{true or row.getCalculatedAmountFraction(recipeBean.getPortion()).wholeNumb ne 0}"
+                                                      value="#{row.getCalculatedAmountFraction(recipeBean.getPortion()).wholeNumb}"
+                                                      styleClass = "list-item-amountWhole"/>
+                                        <p:outputPanel id="fractionAmount" rendered="#{true or row.getCalculatedAmountFraction(recipeBean.getPortion()).num ne 0}">
+                                            <span class = "list-item-fracSpan">
+                                                <sup class = "list-item-frac">#{row.getCalculatedAmountFraction(recipeBean.getPortion()).num}</sup>
+                                                <span class = "list-item-fracSep">/</span>
+                                                <sub class = "list-item-frac">#{row.getCalculatedAmountFraction(recipeBean.getPortion()).denom}</sub>
+                                            </span>
+                                        </p:outputPanel>
+                                        <h:outputText value="#{row.unitNameEN}" styleClass = "list-item-amountUnit"/>
+                                        <ui:fragment rendered="#{row.hasAlterAmount()}">
+                                            <h:outputText id="wholeAlterAmount"
+                                                          value="#{row.getCalculatedAlterAmoutFraction(recipeBean.getPortion()).originalNumb}"
+                                                          styleClass = "list-item-amountWhole amountWhole-before">
+                                                <f:convertNumber maxFractionDigits="1"/>
+                                            </h:outputText>
+<!--                                            <p:outputPanel id="fractionAlterAmount" rendered="#{row.getCalculatedAlterAmoutFraction(recipeBean.getPortion()).num ne 0}">-->
+<!--                                            <span>-->
+<!--                                                <sup class = "list-item-frac">#{row.getCalculatedAlterAmoutFraction(recipeBean.getPortion()).num}</sup>-->
+<!--                                                <span class = "list-item-fracSep">/</span>-->
+<!--                                                <sub class = "list-item-frac">#{row.getCalculatedAlterAmoutFraction(recipeBean.getPortion()).denom}</sub>-->
+<!--                                            </span>-->
+<!--                                            </p:outputPanel>-->
+                                            <h:outputText value="#{row.alterUnitNameEN})"
+                                                          styleClass = "list-item-amountUnit"/>
+                                        </ui:fragment>
+                                        <h:outputText value="#{row.ingredientNameEN}" styleClass="list-item-name"/>
+                                    </div>
+                                </p:repeat>
+                                <div class="ingredient-list-item select-all-checkbox-wrapper">
+                                    <p:selectBooleanCheckbox id="selectAllCheckbox"
+                                                             value="#{recipeBean.isAllChecked()}"
+                                                             styleClass = "checkbox-style">
+                                        <p:ajax
+                                                update="@form @([id$='ingredientsList']) @([id$='rowCheckboxWrapper']) @([id$='rowCheckbox'])"
+                                                listener="#{recipeBean.setAllChecked(recipeBean.isAllChecked())}"/>
+                                    </p:selectBooleanCheckbox>
+                                    <span class="list-item-amountWhole">Select all</span>
+                                </div>
+                            </div>
+                            <div class = "ingredient-button">
+                                <p:commandButton type="button" value="Add to list" styleClass="ui-button-danger" />
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+                <div class = "right-column">
+                    <h1>#{recipeBean.getRecipe().recipeNameEN}</h1>
+                    <h2>#{recipeBean.getDescriptionTitle()}</h2>
+                    <div class="directions">
+                        <ol>
+                            <p:repeat value="#{recipeBean.getDescriptionToString()}" var="item">
+                                <li class = "description">
+                                    #{item}
+                                </li>
+                            </p:repeat>
+                        </ol>
+                    </div>
+                    <h3>Nutrition for the whole recipe</h3>
+                    <div class = "itemNut-wrapper">
+                        <p:repeat value="#{recipeBean.getRecipe().nutritionValues}" var="itemNut">
+                            <div class = "itemNut">
+                                <span>#{itemNut.get(0)}</span>
+                                <span>#{itemNut.get(1)}</span>
+                            </div>
+                        </p:repeat>
+                    </div>
+                </div>
+            </div>
+        </article>
+</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,13 @@
+com\jsf\shoppingList\Index.class
+com\jsf\shoppingList\AddRecipesBean.class
+com\jsf\shoppingList\DataLayer\Unit.class
+com\jsf\shoppingList\DataLayer\DbConnect.class
+com\jsf\shoppingList\DataLayer\Recipes.class
+com\jsf\shoppingList\Utils\ConvertToFraction.class
+com\jsf\shoppingList\DataLayer\AltIngredients.class
+com\jsf\shoppingList\ShoppingListBean.class
+com\jsf\shoppingList\RecipesListBean.class
+com\jsf\shoppingList\RecipeBean.class
+com\jsf\shoppingList\DataLayer\Ingredients.class
+com\jsf\shoppingList\DataLayer\AltUnitValue.class
+com\jsf\shoppingList\AddIngredientBean.class

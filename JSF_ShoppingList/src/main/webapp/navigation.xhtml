@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:view contentType="text/html">
+<ui:insert name="metadata"/>
+<h:head>
+    <title>
+        <ui:insert name="title"/>
+    </title>
+    <link rel="shortcut icon" type="image/x-icon" href="/JSF_ShoppingList/images/favicon.ico"/>
+    <ui:insert name="bootstrap"/>
+
+    <h:outputStylesheet name="css/style.css"/>
+</h:head>
+<h:body>
+    <header class="nav-area">
+        <nav class="header-wrapper">
+            <div>
+                <ul class = "main-menu">
+                    <li class="nav-item">
+                        <h:link value="Recipes" outcome="recipesList"/>
+                    </li>
+                    <li class="nav-item">
+                        <h:link value="Add new recipes" outcome="addRecipes"/>
+                    </li>
+                    <li  class="nav-item">
+                        <h:link value="Add new ingredient" outcome="addIngredient"/>
+                    </li>
+                </ul>
+            </div>
+            <h:link outcome="index" styleClass="main-menu">
+                <h:graphicImage value="images/Logo.jpg" alt="Logo" styleClass="header-img" title="Home page"/>
+            </h:link>
+            <div class="nav-item right-nav-item">
+                <h:link outcome="shoppingList">
+                    <span class="pi pi-shopping-cart shopping-cart-icon"/>
+                    <span>Shopping List</span>
+                </h:link>
+            </div>
+        </nav>
+    </header>
+    <div id="content">
+        <ui:insert name="content"/>
+    </div>
+    <a href="#" title = "Go to the top">
+        <span class = "go-up-button pi pi-arrow-circle-up"/>
+    </a>
+    <footer class="footer"/>
+</h:body>
+</f:view>
+</html>

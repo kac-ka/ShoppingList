@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="navigation.xhtml">
+    <ui:define name="title">GG - Recipes</ui:define>
+    <ui:define name="content">
+        <h:form>
+            <p:dataView id="recipe-grid-view"
+                        value="#{recipesList.recipesList}"
+                        var="item"
+                        layout="grid"
+                        styleClass="menu-header">
+                <f:facet name="header">
+                    <div class="dataview-header">
+                        <div class="input-text">
+                            <p:outputLabel value="Recipe name" for="@next"/>
+                            <p:autoComplete id="recipes"
+                                            value="#{recipesList.selectedRecipes}"
+                                            completeMethod="#{recipesList.completeRecipe}"
+                                            forceSelection="false"
+                                            immediate="true"
+                                            placeholder="Search recipes"
+                                            scrollHeight="250">
+                                <f:ajax event="valueChange" process="@this" listener="#{recipesList.setNullRecipeList}" update="@([id$='recipe-grid-view_content']) @([id$='recipeBox'])" />
+                            </p:autoComplete>
+                        </div>
+                        <p:selectCheckboxMenu id="ingredientFilter"
+                                              value="#{recipesList.selectedIngredient}"
+                                              label="Ingredient (#{recipesList.selectedIngredient.size()})"
+                                              filter="true"
+                                              filterMatchMode="startsWith"
+                                              immediate="true"
+                                              scrollHeight="250"
+                                              panelStyleClass="filter-menu-panel"
+                                              styleClass="filter-menu-input">
+                            <f:selectItems value="#{recipesList.ingredientFilterList}" var="item" itemLabel="#{item.ingredientNameEN}" itemValue="#{item.ingredientID}"/>
+                            <f:ajax event="change" process="@form" update="@form" />
+
+                        </p:selectCheckboxMenu>
+                        <div class = "filter-buttons-wrapper">
+                            <p:commandButton type="submit"
+                                             value="Submit"
+                                             actionListener="#{recipesList.setNullRecipeList}"
+                                             update="@([id$='recipe-grid-view'])"
+                                             process="@form"
+                                             styleClass="ui-button-submit" />
+                            <p:commandButton type="submit"
+                                             value="Reset"
+                                             actionListener="#{recipesList.setNullFilters}"
+                                             update="@([id$='recipes']) @([id$='ingredientFilter']) @([id$='recipe-grid-view'])"
+                                             process="@form"
+                                             styleClass="ui-button-danger" />
+                        </div>
+                    </div>
+                </f:facet>
+                <p:dataViewGridItem>
+                    <div class="recipe-box">
+                        <p:commandLink id="recipeBox" action="#{recipesList.getRecipeUrl(item.recipesID)}" styleClass="">
+                            <h:graphicImage value="images/#{item.pathIMG}"
+                                            alt="#{item.recipeNameEN}"
+                                            styleClass="header-img-item"
+                                            title="Home page"/>
+                            <span class="recipe-label">#{item.recipeNameEN}</span>
+                        </p:commandLink>
+                    </div>
+                </p:dataViewGridItem>
+            </p:dataView>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

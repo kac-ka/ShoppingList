@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition template="navigation.xhtml">
+    <ui:define name="title">GG - Add Recipe</ui:define>
+    <ui:define name="content">
+        <h:form enctype="multipart/form-data">
+            <div class="article-wrapper">
+                <div class="content-wrapper">
+                    <div class="left-column">
+                        <div class="img-own-recipe">
+                            <p:growl id="messages" showDetail="true"/>
+                            <p:fileUpload mode="simple"
+                                          skinSimple="true"
+                                          multiple="false"
+                                          sizeLimit="256000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                          invalidSizeMessage="Maximum file size allowed is 250 KB"
+                                          invalidFileMessage="only gif | jpg | jpeg | png is allowed"
+                                          update="messages"
+                                          listener="#{addRecipesBean.handleFileUpload}"
+                                          styleClass="addImgButton"/>
+                        </div>
+                        <div class="ingredient-wrapper ingredient-wrapper-flex">
+                            <ui:repeat id="ingredientRepeat" value="#{addRecipesBean.recipeIngredientsList}" var="row">
+                                <div>
+                                    <div>
+                                    <p:selectOneMenu id="ingredientName"
+                                                     value="#{row.ingredientID}"
+                                                     title="#{row.ingredientNameEN}"
+                                                     styleClass="ownRecipeSelectOneMenuStyle"
+                                                     panelStyleClass="ownRecipeSelectOneMenuStylePanel ownRecipeSelectOneMenuStylePanelWidth">
+                                        <f:selectItem itemLabel="–" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{addRecipesBean.ingredientsList}"
+                                                       var="ing"
+                                                       itemLabel="#{ing.ingredientNameEN}"
+                                                       itemValue="#{ing.ingredientID}"/>
+                                    </p:selectOneMenu>
+                                    </div>
+                                    <div>
+                                    <p:inputNumber id="ingredientUnitValue"
+                                                   value="#{row.amount}"
+                                                   minValue="0.000"
+                                                   decimalPlaces="3"
+                                                   styleClass="servingsValue"/>
+                                    </div>
+                                    <div>
+                                    <p:selectOneMenu id="unitDrop"
+                                                     value="#{row.unitID}"
+                                                     styleClass="selectOneMenuStyle ownRecipeUnitDrop"
+                                                     panelStyleClass="selectOneMenuStylePanel">
+                                        <f:selectItem itemLabel="–" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{addRecipesBean.allUnit}"
+                                                       var="unit"
+                                                       itemLabel="#{unit.unitNameEN}"
+                                                       itemValue="#{unit.unitID}"/>
+                                    </p:selectOneMenu>
+                                    </div>
+                                    <div>
+                                        <p:commandButton id="addNewLine"
+                                                         actionListener="#{addRecipesBean.addRecipeIngredient()}"
+                                                         process="@form"
+                                                         update="@form @([id$='ingredientRepeat'])"
+                                                         partialSubmit="true"
+                                                         icon="pi pi-plus"
+                                                         immediate="true"
+                                                         styleClass="rounded-button ui-button-outlined"/>
+                                    </div>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                        <div title="" class="numberOfServings">
+                            <p:outputLabel  for="servingsValue"
+                                            id="servingsLabel"
+                                            value="Servings"
+                                            styleClass="servingsLabel"/>
+                            <p:inputNumber id="servingsValue"
+                                           value="#{addRecipesBean.recipes.portion}"
+                                           minValue="1"
+                                           decimalPlaces="0"
+                                           styleClass="servingsValue"/>
+                        </div>
+                    </div>
+                    <div class="right-column">
+                        <p:commandButton type="submit"
+                                         process="@form"
+                                         update="@none"
+
+                                         value="Save recipe"
+                                         styleClass="ui-button-danger alignRightButton" />
+                        <p:inputText id="recipeName"
+                                     value="#{addRecipesBean.recipes.recipeNameEN}"
+                                     placeholder="Recipe name"
+                                     styleClass="recipeNameTxt"/>
+                        <h2>Directions</h2>
+                        <p:inputTextarea rows="15"
+                                         cols="75"
+                                         placeholder="Write your recipe description here ..."
+                                         styleClass="directionsInput"/>
+                        <h3>Nutrition for the whole recipe</h3>
+                        <div class = "nutritionValues">
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="calories"
+                                                id="caloriesLabel"
+                                                value="Calories"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="calories"
+                                               value="#{addRecipesBean.calories}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="kcal"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="protein"
+                                                id="proteinLabel"
+                                                value="Protein"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="protein"
+                                               value="#{addRecipesBean.protein}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="totalCarbs"
+                                                id="totalCarbsLabel"
+                                                value="Total carbs"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="totalCarbs"
+                                               value="#{addRecipesBean.totalCarbs}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="sugars"
+                                                id="sugarsLabel"
+                                                value="Sugarss"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="sugars"
+                                               value="#{addRecipesBean.sugars}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="fiber"
+                                                id="fiberLabel"
+                                                value="Fiber"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="fiber"
+                                               value="#{addRecipesBean.fiber}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="fat"
+                                                id="fatLabel"
+                                                value="Fat"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="fat"
+                                               value="#{addRecipesBean.fat}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="saturatedFat"
+                                                id="saturatedFatLabel"
+                                                value="Saturated fat"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="saturatedFat"
+                                               value="#{addRecipesBean.saturatedFat}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="transFat"
+                                                id="transFatLabel"
+                                                value="Trans fat"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="transFat"
+                                               value="#{addRecipesBean.transFat}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="mufa"
+                                                id="mufaLabel"
+                                                value="MUFA"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="mufa"
+                                               value="#{addRecipesBean.mufa}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                            <div class="nutritionValuesItem">
+                                <p:outputLabel  for="pufa"
+                                                id="pufaLabel"
+                                                value="PUFA"
+                                                styleClass="nutritionsLabel"/>
+                                <p:inputNumber id="pufa"
+                                               value="#{addRecipesBean.pufa}"
+                                               minValue="0"
+                                               decimalPlaces="0"
+                                               symbol="g"
+                                               symbolPosition="s"
+                                               emptyValue="always"
+                                               styleClass="nutritionsValue"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
