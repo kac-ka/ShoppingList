@@ -19,7 +19,7 @@ public class DbConnect {
     public static boolean Connect(String dbName){
 
 
-        String conStrUrl = "jdbc:sqlserver://SQL5107.site4now.net\\SQLEXPRESS:1433;user=;password=;databaseName=";
+        String conStrUrl = "jdbc:sqlserver://DESKTOP-UF0PE6E\\SQLEXPRESS:57411;integratedSecurity=true;databaseName=" + dbName;
 
         try {
 
